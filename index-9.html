@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ورّاق - تتبع قراءاتك</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #F5F5F5;
+      color: #5E667C;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      text-align: center;
+      padding: 60px 20px 30px;
+    }
+
+    .header h1 {
+      font-size: 42px;
+      color: #ED8F51;
+      margin-bottom: 10px;
+    }
+
+    .header h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #444;
+    }
+
+    .header p {
+      font-size: 18px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .split-section {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      flex-wrap: wrap;
+      max-width: 1000px;
+      margin: 40px auto;
+    }
+
+    .split-text {
+      flex: 1 1 60%;
+      background: white;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .split-text h3 {
+      font-size: 22px;
+      margin-bottom: 25px;
+    }
+
+    .split-text ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .split-text li {
+      font-size: 16px;
+      margin-bottom: 20px;
+      padding-right: 28px;
+      position: relative;
+      text-align: right;
+    }
+
+    .split-text li::before {
+      content: '✔';
+      position: absolute;
+      right: 0;
+      color: #ED8F51;
+      font-weight: bold;
+    }
+
+    .split-image {
+      flex: 1 1 30%;
+      background: linear-gradient(rgba(237,143,81,0.3), rgba(237,143,81,0.3)), url('https://images.unsplash.com/photo-1589998059171-988d887df646') center center / cover no-repeat;
+      border-radius: 20px;
+      min-height: 28px;
+    }
+
+    .form-section {
+      background: white;
+      padding: 50px 30px;
+      margin: 40px auto;
+      max-width: 500px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .form-section h3 {
+      font-size: 22px;
+      margin-bottom: 25px;
+    }
+
+    .form-section input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #7E88A5;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    .form-section button {
+      width: 95%;
+      padding: 12px;
+      background-color: #F5B857;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-section button:hover {
+      background-color: #ED8F51;
+    }
+
+    @media (max-width: 768px) {
+      .split-section {
+        flex-direction: column-reverse;
+      }
+
+      .split-image {
+        min-height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>ورّاق</h1>
+    <h2>كل كتاب تقرأه، له مكان في ورّاق.</h2>
+    <p>منصة ذكية تساعدك على تتبع قراءاتك، توثيق ملاحظاتك، وقياس إنجازاتك القرائية الشهرية والسنوية بكل سلاسة.</p>
+  </div>
+
+  <div class="split-section">
+    <div class="split-image"></div>
+    <div class="split-text">
+      <h3>ليش تسجل معنا؟</h3>
+      <ul>
+        <li>تتبع إنشطاك القرائي وإنجازاتك</li>
+        <li>إحصائيات القراءة الشهرية والسنوية</li>
+        <li>إضافة الكتب وملاحظاتك بسهولة</li>
+        <li>بحث عن الكتب وتوثيقها بمكتبتك</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>سجل اهتمامك الآن</h3>
+    <form id="form">
+      <input type="text" id="name" placeholder="اسمك" required><br>
+      <input type="email" id="email" placeholder="إيميلك" required><br>
+      <button type="submit">سجل اهتمامك</button>
+    </form>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHbPFqwBrEtfyoHCHnF3S7aR9SGk8CBHY",
+      authDomain: "warraq-mvp.firebaseapp.com",
+      projectId: "warraq-mvp"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    document.getElementById("form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
+      db.collection("interestedUsers").add({
+        name: name,
+        email: email,
+        timestamp: new Date()
+      }).then(() => {
+        alert("شكراً لتسجيلك!");
+        document.getElementById("form").reset();
+      }).catch((error) => {
+        alert("حدث خطأ. حاول مجددًا.");
+        console.error(error);
+      });
+    });
+  </script>
+
+</body>
+</html>
