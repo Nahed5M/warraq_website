@@ -5,8 +5,6 @@
   <meta charset="UTF-8">
   <title>ورّاق - تتبع قراءاتك</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <style>
     body {
       font-family: 'Cairo', sans-serif;
@@ -39,6 +37,25 @@
       margin: 0 auto;
     }
 
+    .cta-button {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 24px;
+      font-size: 16px;
+      color: white;
+      background-color: #ED8F51;
+      border: none;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background-color: #c46b34;
+    }
+
+
     .split-section {
       display: flex;
       justify-content: center;
@@ -49,7 +66,7 @@
     }
 
     .split-text {
-      flex: 1 1 60%;
+      width: 400px;  
       background: white;
       border-radius: 20px;
       padding: 40px 30px;
@@ -57,7 +74,7 @@
     }
 
     .split-text h3 {
-      font-size: 22px;
+      font-size: 30px;
       margin-bottom: 25px;
     }
 
@@ -68,7 +85,8 @@
     }
 
     .split-text li {
-      font-size: 16px;
+      font-size: 23px;
+      line-height: 1.8;
       margin-bottom: 20px;
       padding-right: 28px;
       position: relative;
@@ -84,11 +102,13 @@
     }
 
     .split-image {
-      flex: 1 1 30%;
-      background: linear-gradient(rgba(237,143,81,0.3), rgba(237,143,81,0.3)), url('https://images.unsplash.com/photo-1589998059171-988d887df646') center center / cover no-repeat;
+      width: 250px;
+      height: 500px;
+      background: linear-gradient(rgba(237,143,81,0.3), rgba(237,143,81,0.3)), url('saudi-books.jpg') center center / cover no-repeat;
       border-radius: 20px;
-      min-height: 28px;
+      margin-left: 20px;
     }
+
 
     .form-section {
       background: white;
@@ -137,7 +157,7 @@
       }
 
       .split-image {
-        min-height: 100px;
+        min-height: 200px;
       }
     }
   </style>
@@ -145,9 +165,10 @@
 <body>
 
   <div class="header">
-    <h1>ورّاق</h1>
+    <h1>هلا ومسهلا</h1>
     <h2>كل كتاب تقرأه، له مكان في ورّاق.</h2>
-    <p>منصة ذكية تساعدك على تتبع قراءاتك، توثيق ملاحظاتك، وقياس إنجازاتك القرائية الشهرية والسنوية بكل سلاسة.</p>
+    <p>تطبيق يساعدك على تتبع قراءاتك، توثيق ملاحظاتك، وقياس إنجازاتك القرائية الشهرية والسنوية بكل سلاسة.</p>
+    <a href="#form" class="cta-button">سجل معنا</a>
   </div>
 
   <div class="split-section">
@@ -155,7 +176,7 @@
     <div class="split-text">
       <h3>ليش تسجل معنا؟</h3>
       <ul>
-        <li>تتبع إنشطاك القرائي وإنجازاتك</li>
+        <li>تتبع نشاطك القرائي وإنجازاتك</li>
         <li>إحصائيات القراءة الشهرية والسنوية</li>
         <li>إضافة الكتب وملاحظاتك بسهولة</li>
         <li>بحث عن الكتب وتوثيقها بمكتبتك</li>
@@ -163,42 +184,18 @@
     </div>
   </div>
 
-  <div class="form-section">
-    <h3>سجل اهتمامك الآن</h3>
-    <form id="form">
-      <input type="text" id="name" placeholder="اسمك" required><br>
-      <input type="email" id="email" placeholder="إيميلك" required><br>
-      <button type="submit">سجل اهتمامك</button>
-    </form>
-  </div>
+ <div class="form-section" id="form">
+  <h3>سجل الآن</h3>
+  <p style="font-size: 16px; margin-bottom: 30px;">
+    وكن من أوائل القرّاء اللي يصنعون مكتبتهم في ورّاق.
+  </p>
+  <form>
+    <input type="text" placeholder="اسمك" required><br>
+    <input type="email" placeholder="إيميلك" required><br>
+    <button type="submit">سجل اهتمامك</button>
+  </form>
+</div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBHbPFqwBrEtfyoHCHnF3S7aR9SGk8CBHY",
-      authDomain: "warraq-mvp.firebaseapp.com",
-      projectId: "warraq-mvp"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    document.getElementById("form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-
-      db.collection("interestedUsers").add({
-        name: name,
-        email: email,
-        timestamp: new Date()
-      }).then(() => {
-        alert("شكراً لتسجيلك!");
-        document.getElementById("form").reset();
-      }).catch((error) => {
-        alert("حدث خطأ. حاول مجددًا.");
-        console.error(error);
-      });
-    });
-  </script>
 
 </body>
 </html>
