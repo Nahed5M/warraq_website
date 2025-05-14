@@ -5,6 +5,11 @@
   <meta charset="UTF-8">
   <title>ورّاق - تتبع قراءاتك</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  
   <style>
     body {
       font-family: 'Cairo', sans-serif;
@@ -125,6 +130,11 @@
       margin-bottom: 25px;
     }
 
+    .form-section p {
+      font-size: 16px;
+      margin-bottom: 25px;
+    }
+
     .form-section input {
       width: 90%;
       padding: 12px;
@@ -184,18 +194,51 @@
     </div>
   </div>
 
- <div class="form-section" id="form">
-  <h3>سجل الآن</h3>
-  <p style="font-size: 16px; margin-bottom: 30px;">
-    وكن من أوائل القرّاء اللي يصنعون مكتبتهم في ورّاق.
-  </p>
-  <form>
-    <input type="text" placeholder="اسمك" required><br>
-    <input type="email" placeholder="إيميلك" required><br>
-    <button type="submit">سجل اهتمامك</button>
-  </form>
-</div>
+  <div class="form-section" id="form">
+    <h3>سجل الآن</h3>
+    <p>كن من أوائل القرّاء اللي يصنعون مكتبتهم الذكية في ورّاق.</p>
+    <form id="signup-form">
+      <input type="text" id="name" placeholder="اسمك" required><br>
+      <input type="email" id="email" placeholder="إيميلك" required><br>
+      <button type="submit">تسجيل</button>
+    </form>
+  </div>
 
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHbPFqwBrEtfyoHCHnF3S7aR9SGk8CBHY",
+      authDomain: "warraq-mvp.firebaseapp.com",
+      projectId: "warraq-mvp",
+      storageBucket: "warraq-mvp.firebasestorage.app",
+      messagingSenderId: "151521285811",
+      appId: "1:151521285811:web:03993e1344204de79442c6",
+      measurementId: "G-59X2DL0NQN"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Form submission handler
+    document.getElementById("signup-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
+      db.collection("interestedUsers").add({
+        name: name,
+        email: email,
+        timestamp: new Date()
+      }).then(() => {
+        alert("تم التسجيل بنجاح! شكرًا لك 💛");
+        document.getElementById("signup-form").reset();
+      }).catch((error) => {
+        alert("حدث خطأ أثناء التسجيل. حاول مرة أخرى.");
+        console.error(error);
+      });
+    });
+  </script>
 
 </body>
 </html>
